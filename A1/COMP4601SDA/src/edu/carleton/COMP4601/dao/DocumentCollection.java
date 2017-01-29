@@ -22,6 +22,10 @@ public class DocumentCollection {
 	private List<Document> documents;
 	private static String DOC_COLLECTION_NAME = "documents";
 	
+	public DocumentCollection() {
+		loadAll();
+	}
+	
 	public void loadAll() {
 		for (org.bson.Document d : Database.getDB().getCollection(DOC_COLLECTION_NAME).find()) {
 			documents.add(new Document(d));
