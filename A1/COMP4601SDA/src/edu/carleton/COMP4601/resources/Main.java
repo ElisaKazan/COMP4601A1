@@ -1,6 +1,5 @@
 package edu.carleton.COMP4601.resources;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.GET;

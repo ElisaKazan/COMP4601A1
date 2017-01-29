@@ -2,6 +2,7 @@ package edu.carleton.COMP4601.dao;
 
 import static com.mongodb.client.model.Filters.eq;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -11,7 +12,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.mongodb.client.model.FindOneAndReplaceOptions;
 
-import edu.carleton.COMP4601.dao.Document;
 import edu.carleton.COMP4601.db.Database;
 
 @XmlRootElement
@@ -21,6 +21,10 @@ public class DocumentCollection {
 	@XmlElement(name="documents")
 	private List<Document> documents;
 	private static String DOC_COLLECTION_NAME = "documents";
+	
+	public interface DocumentPredicate {
+		boolean matches(Document d);
+	}
 	
 	public DocumentCollection() {
 		loadAll();
@@ -36,6 +40,38 @@ public class DocumentCollection {
 		for (Document d : documents) {
 			saveOne(d);
 		}
+	}
+	
+	public Document findOne(DocumentPredicate predicate) {
+		List<Document> docs = findAll(predicate);
+		
+		if (docs.size() == 0) {
+			return null;
+		}
+		
+		return docs.get(0);
+	}
+	
+	public Document findOne(int id) {
+		return findOne(new DocumentPredicate() {
+			
+			@Override
+			public boolean matches(Document d) {
+				// TODO Auto-generated method stub
+				return d.getId() == id;
+			}
+		});
+	}
+	
+	public List<Document> findAll(DocumentPredicate predicate) {
+		List<Document> docs = new ArrayList<Document>();
+		for (Document d : docs) {
+			if (predicate.matches(d)) {
+				docs.add(d);
+			}
+		}
+		
+		return docs;
 	}
 	
 	public void saveOne(Document d) {
