@@ -9,7 +9,7 @@ import javax.ws.rs.core.UriInfo;
 @Path("/sda")
 public class Main {
 	// Allows to insert contextual objects into the class,
-		// e.g. ServletContext, Request, Response, UriInfo
+	// e.g. ServletContext, Request, Response, UriInfo
 	@Context
 	UriInfo uriInfo;
 	@Context

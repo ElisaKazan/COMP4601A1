@@ -23,7 +23,26 @@ public class Document {
 		this();
 		this.id = id;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public Document(org.bson.Document doc) {
+		this.id = doc.getInteger("_id");
+		this.name = doc.getString("text");
+		this.tags = (ArrayList<String>) doc.get("tags");
+		this.links = (ArrayList<String>) doc.get("links");
+	}
 
+	public org.bson.Document save() {
+		org.bson.Document doc = new org.bson.Document();
+		
+		doc.put("_id", id);
+		doc.put("name", name);
+		doc.put("tags", tags);
+		doc.put("links", links);
+		
+		return doc;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public Document(Map<?, ?> map) {
 		this();
