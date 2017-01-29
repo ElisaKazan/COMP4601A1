@@ -53,6 +53,15 @@ public class Document {
 		this.tags = (ArrayList<String>) map.get("tags");
 		this.links = (ArrayList<String>) map.get("links");
 	}
+	
+	public String getDocFormat() {
+		// ID - Name (tag, tag, tag)
+		String format = this.getId() + " - " + this.getName() + " (";
+		for(String tag : this.getTags()) {
+			format += tag + ", ";
+		}
+		return format.substring(0, format.length()-3) + ")";
+	}
 
 	public Integer getId() {
 		return id;

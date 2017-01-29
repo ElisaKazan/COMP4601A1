@@ -65,20 +65,13 @@ public class Main {
 		String html = "<html> "+ "<title>" + name + "</title>" + "<body>";
 
 		for(Document d : documents.getDocuments()) {
-			html += "" + d.getName();
+			html += d.getDocFormat() + "<br>";
 		}
 
 		html += "</body>" + "</html> ";
 
-
-
 		return html;
 	}
-
-
-
-
-
 
 	@Path("{id}")
 	public DocumentAction getDocument(@PathParam("id") String id) {
