@@ -17,7 +17,7 @@ import edu.carleton.COMP4601.db.Database;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DocumentCollection {
-	private DocumentCollection collection;
+	private static DocumentCollection collection;
 	@XmlElement(name="documents")
 	private List<Document> documents;
 	private static String DOC_COLLECTION_NAME = "documents";
@@ -52,7 +52,7 @@ public class DocumentCollection {
 		this.documents = documents;
 	}
 
-	public DocumentCollection getInstance() {
+	public static DocumentCollection getInstance() {
 		if (collection == null) {
 			collection = new DocumentCollection();
 		}
