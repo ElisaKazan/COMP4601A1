@@ -95,4 +95,16 @@ public class DocumentCollection {
 		
 		return collection;
 	}
+
+	public boolean add(Document d) {
+		if (documents.contains(d)) {
+			return false;
+		}
+		
+		documents.add(d);
+		
+		saveOne(d);
+		
+		return true;
+	}
 }

@@ -31,6 +31,13 @@ public class Document {
 		this.tags = (ArrayList<String>) doc.get("tags");
 		this.links = (ArrayList<String>) doc.get("links");
 	}
+	
+	public Document(int id, String name, ArrayList<String> tags, ArrayList<String> links) {
+		this.id = id;
+		this.name = name;
+		this.tags = tags;
+		this.links = links;
+	}
 
 	public org.bson.Document save() {
 		org.bson.Document doc = new org.bson.Document();
@@ -125,5 +132,10 @@ public class Document {
 
 	public void removeLink(String link) {
 		links.remove(link);
+	}
+	
+	@Override
+	public boolean equals(Object d) {
+		return d == null || !(d instanceof Document) ? false : ((Document)d).id == this.id;
 	}
 }
