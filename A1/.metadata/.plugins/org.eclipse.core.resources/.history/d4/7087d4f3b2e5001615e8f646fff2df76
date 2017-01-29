@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="COMP4601SDA">
-        <property name="context-root" value="COMP4601SDA"/>
-        <property name="java-output-path" value="/COMP4601SDA/build/classes"/>
-    </wb-module>
-</project-modules>
