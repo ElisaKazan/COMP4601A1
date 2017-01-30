@@ -5,6 +5,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +17,19 @@ import java.util.Map;
  * TODO: Replace all uses of this class before publishing your app.
  */
 public class DocumentCollection {
-    private Map<Integer, Document> documentsMap = new HashMap<Integer, Document>();
-    private List<Document> documents = new ArrayList<Document>();
+    private Map<Integer, Document> documentsMap = new HashMap<>();
+    private List<Document> documents = new ArrayList<>();
+
+    private static DocumentCollection documentCollection;
 
     public DocumentCollection() {
+        add(new Document(0, "Elisa's Doc", "HELLLLLLLLOOOOOO", new ArrayList<>(Arrays.asList("thing1", "thing3")), new ArrayList<String>()));
+        add(new Document(1, "Jack's Doc", "HAIIIIIII", new ArrayList<>(Arrays.asList("thing1", "thing55")), new ArrayList<String>()));
+    }
 
+    public void add(Document d) {
+        documents.add(d);
+        documentsMap.put(d.getId(), d);
     }
 
     public void addDocumentsFromXml(XmlPullParser parser) {
@@ -43,5 +52,21 @@ public class DocumentCollection {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Document get(int id) {
+        return documentsMap.get(id);
+    }
+
+    public static DocumentCollection getInstance() {
+        if (documentCollection == null) {
+            documentCollection = new DocumentCollection();
+        }
+
+        return documentCollection;
+    }
+
+    public List<Document> getItems() {
+        return documents;
     }
 }

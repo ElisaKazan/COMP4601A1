@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import edu.carleton.sdamobileapp.dao.DummyContent;
+import edu.carleton.sdamobileapp.dao.Document;
+import edu.carleton.sdamobileapp.dao.DocumentCollection;
 
 /**
  * A fragment representing a single Document detail screen.
@@ -27,7 +28,7 @@ public class DocumentDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
-    private DummyContent.DummyItem mItem;
+    private Document mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -41,15 +42,12 @@ public class DocumentDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            mItem = DocumentCollection.getInstance().get(Integer.valueOf(getArguments().getString(ARG_ITEM_ID)));
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.content);
+                appBarLayout.setTitle(mItem.getName());
             }
         }
     }
@@ -61,7 +59,7 @@ public class DocumentDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.document_detail)).setText(mItem.details);
+            ((TextView) rootView.findViewById(R.id.document_detail)).setText(mItem.getText());
         }
 
         return rootView;

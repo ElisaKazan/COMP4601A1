@@ -1,5 +1,8 @@
 package edu.carleton.sdamobileapp.dao;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

@@ -9,13 +9,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import edu.carleton.sdamobileapp.dao.DummyContent;
+import edu.carleton.sdamobileapp.dao.Document;
+import edu.carleton.sdamobileapp.dao.DocumentCollection;
 
 import java.util.List;
 
@@ -67,16 +69,16 @@ public class DocumentListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DocumentCollection.getInstance().getItems()));
     }
 
     public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<Document> documents;
 
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
-            mValues = items;
+        public SimpleItemRecyclerViewAdapter(List<Document> docs) {
+            documents = docs;
         }
 
         @Override
@@ -88,16 +90,17 @@ public class DocumentListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+            holder.mItem = documents.get(position);
+            holder.mIdView.setText(String.valueOf(documents.get(position).getId()));
+            holder.mNameView.setText(documents.get(position).getName());
+            holder.mTagsView.setText("(" + TextUtils.join(", ", documents.get(position).getTags()) + ")");
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(DocumentDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        arguments.putString(DocumentDetailFragment.ARG_ITEM_ID, String.valueOf(holder.mItem.getId()));
                         DocumentDetailFragment fragment = new DocumentDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -106,7 +109,7 @@ public class DocumentListActivity extends AppCompatActivity {
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, DocumentDetailActivity.class);
-                        intent.putExtra(DocumentDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        intent.putExtra(DocumentDetailFragment.ARG_ITEM_ID, String.valueOf(holder.mItem.getId()));
 
                         context.startActivity(intent);
                     }
@@ -116,25 +119,27 @@ public class DocumentListActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return mValues.size();
+            return documents.size();
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
             public final TextView mIdView;
-            public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
+            public final TextView mNameView;
+            public final TextView mTagsView;
+            public Document mItem;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
                 mIdView = (TextView) view.findViewById(R.id.id);
-                mContentView = (TextView) view.findViewById(R.id.content);
+                mNameView = (TextView) view.findViewById(R.id.content);
+                mTagsView = (TextView) view.findViewById(R.id.tags);
             }
 
             @Override
             public String toString() {
-                return super.toString() + " '" + mContentView.getText() + "'";
+                return super.toString() + " '" + mNameView.getText() + "'";
             }
         }
     }
