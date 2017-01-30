@@ -18,14 +18,15 @@ import java.util.Map;
  * TODO: Replace all uses of this class before publishing your app.
  */
 public class DocumentCollection {
+    public static final String PREFIX = "http://10.0.2.2:8080/COMP4601SDA/rest/sda";
     private Map<Integer, Document> documentsMap = new HashMap<>();
     private List<Document> documents = new ArrayList<>();
 
     private static DocumentCollection documentCollection;
 
     public DocumentCollection() {
-        add(new Document(0, "Elisa's Doc", "HELLLLLLLLOOOOOO", new ArrayList<>(Arrays.asList("thing1", "thing3")), new ArrayList<String>(Arrays.asList("http://www.ofnc.ca/breports.php","http://www.birdscanada.org/"))));
-        add(new Document(1, "Jack's Doc", "HAIIIIIII", new ArrayList<>(Arrays.asList("thing1", "thing55")), new ArrayList<String>(Arrays.asList("https://en.wikipedia.org/wiki/Bird","https://www.getpostman.com/docs/introduction"))));
+//        add(new Document(0, "Elisa's Doc", "HELLLLLLLLOOOOOO", new ArrayList<>(Arrays.asList("thing1", "thing3")), new ArrayList<String>(Arrays.asList("http://www.ofnc.ca/breports.php","http://www.birdscanada.org/"))));
+//        add(new Document(1, "Jack's Doc", "HAIIIIIII", new ArrayList<>(Arrays.asList("thing1", "thing55")), new ArrayList<String>(Arrays.asList("https://en.wikipedia.org/wiki/Bird","https://www.getpostman.com/docs/introduction"))));
     }
 
     public void add(Document d) {
@@ -34,6 +35,8 @@ public class DocumentCollection {
     }
 
     public void addDocumentsFromXml(XmlPullParser parser) {
+        documents.clear();
+        documentsMap.clear();
 
         try {
             while (parser.next() != XmlPullParser.END_TAG) {
@@ -48,9 +51,7 @@ public class DocumentCollection {
                     documents.add(document);
                 }
             }
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (XmlPullParserException | IOException e) {
             e.printStackTrace();
         }
     }

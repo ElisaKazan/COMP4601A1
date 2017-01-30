@@ -11,18 +11,32 @@ import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
+import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import edu.carleton.sdamobileapp.dao.Document;
 import edu.carleton.sdamobileapp.dao.DocumentCollection;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import static edu.carleton.sdamobileapp.dao.DocumentCollection.PREFIX;
 
 /**
  * An activity representing a list of Documents. This activity
@@ -33,26 +47,53 @@ import java.util.List;
  * item details side-by-side using two vertical panes.
  */
 public class DocumentListActivity extends AppCompatActivity {
-
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
     private boolean mTwoPane;
+    private RecyclerView recyclerView;
 
     private class DownloadDocumentsTask extends AsyncTask<Void, Void, Void> {
-
         @Override
         protected Void doInBackground(Void... voids)
         {
             // Connect to server
-            URL url = new URL("http://10.");
+            try {
+                URL url = new URL(PREFIX + "/documents");
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestProperty("Accept", "application/xml");
+                BufferedReader r = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 
-            // Download XML
+                if (urlConnection.getResponseCode() != 200) {
+                    StringBuilder builder = new StringBuilder();
 
-            // Passes to DocumentCollection
+                    String line;
+
+                    while ((line = r.readLine()) != null) {
+                        builder.append(line).append("\n");
+                    }
+
+                    String text = builder.toString();
+                    Toast.makeText(DocumentListActivity.this, "Cannot get documents: " + text, Toast.LENGTH_LONG).show();
+                }
+
+                XmlPullParser parser = Xml.newPullParser();
+                parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+                parser.setInput(urlConnection.getInputStream(), null);
+                DocumentCollection.getInstance().addDocumentsFromXml(parser);
+            } catch (IOException | XmlPullParserException e) {
+                e.printStackTrace();
+            }
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            recyclerView.removeAllViews();
+            recyclerView.getAdapter().notifyDataSetChanged();
         }
     }
 
@@ -65,22 +106,23 @@ public class DocumentListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-
+        new DownloadDocumentsTask().execute();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
 
-        View recyclerView = findViewById(R.id.document_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        View recyclerViewView = findViewById(R.id.document_list);
+        assert recyclerViewView != null;
+
+        this.recyclerView = (RecyclerView)recyclerViewView;
+
+        setupRecyclerView(this.recyclerView);
 
         if (findViewById(R.id.document_detail_container) != null) {
             // The detail container view will be present only in the

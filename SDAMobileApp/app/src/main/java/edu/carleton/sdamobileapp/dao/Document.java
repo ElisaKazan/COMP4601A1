@@ -82,7 +82,7 @@ public class Document {
         }
 
         // The tags we can actually check
-        if (id == -500 || name == null || text == null) {
+        if (id != -500 && name != null && text != null) {
             this.id = id;
             this.name = name;
             this.tags = tags;
