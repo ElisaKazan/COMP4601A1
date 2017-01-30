@@ -73,7 +73,8 @@ public class Main {
 	@Consumes("application/x-www-form-urlencoded")
 	public Response createDocument(MultivaluedMap<String, String> formParams) {
 		if (!(formParams.containsKey("name") || formParams.containsKey("id") || 
-				formParams.containsKey("tags") || formParams.containsKey("links") || formParams.containsKey("text"))) {
+				formParams.containsKey("tags") || formParams.containsKey("links") || 
+				formParams.containsKey("text"))) {
 			return Response.status(204).entity("Not all necessary parameters provided.").build();
 		}
 		

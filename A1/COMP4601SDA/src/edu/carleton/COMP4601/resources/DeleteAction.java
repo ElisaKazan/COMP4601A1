@@ -58,7 +58,7 @@ public class DeleteAction {
 		}
 		return Response.ok().entity("Deleted documents successfully.").build();
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	public List<Document> doDeleteXML() throws DocumentNotFoundException {
