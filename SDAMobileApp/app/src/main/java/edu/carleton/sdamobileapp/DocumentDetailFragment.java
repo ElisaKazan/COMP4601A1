@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import edu.carleton.sdamobileapp.dao.Document;
@@ -47,7 +49,7 @@ public class DocumentDetailFragment extends Fragment {
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.getName());
+                appBarLayout.setTitle("Document " + mItem.getId());
             }
         }
     }
@@ -59,7 +61,10 @@ public class DocumentDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.document_detail)).setText(mItem.getText());
+            ((EditText) rootView.findViewById(R.id.document_name)).setText(mItem.getName());
+            ((EditText) rootView.findViewById(R.id.document_tags)).setText(TextUtils.join(", ", mItem.getTags()));
+            ((EditText) rootView.findViewById(R.id.document_links)).setText(TextUtils.join(", ", mItem.getLinks()));
+            ((EditText) rootView.findViewById(R.id.document_text)).setText(mItem.getText());
         }
 
         return rootView;

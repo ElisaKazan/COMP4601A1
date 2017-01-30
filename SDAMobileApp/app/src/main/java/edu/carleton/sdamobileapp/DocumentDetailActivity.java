@@ -1,6 +1,8 @@
 package edu.carleton.sdamobileapp;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 /**
  * An activity representing a single Document detail screen. This
@@ -18,6 +21,8 @@ import android.view.MenuItem;
  * in a {@link DocumentListActivity}.
  */
 public class DocumentDetailActivity extends AppCompatActivity {
+
+    private boolean isEditing = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,12 +30,30 @@ public class DocumentDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                findViewById(R.id.document_name).setEnabled(!isEditing);
+                findViewById(R.id.document_tags).setEnabled(!isEditing);
+                findViewById(R.id.document_links).setEnabled(!isEditing);
+                findViewById(R.id.document_text).setEnabled(!isEditing);
+
+                // Check boolean
+                if (isEditing) {
+                    // Stop editing
+                    fab.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_edit));
+
+                    // Save the new info and add to database
+
+                }
+                else {
+                    // Start editing
+                    fab.setImageDrawable(getResources().getDrawable(android.R.drawable.checkbox_off_background));
+                }
+
+                isEditing = !isEditing;
             }
         });
 

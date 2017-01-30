@@ -4,6 +4,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,8 +24,8 @@ public class DocumentCollection {
     private static DocumentCollection documentCollection;
 
     public DocumentCollection() {
-        add(new Document(0, "Elisa's Doc", "HELLLLLLLLOOOOOO", new ArrayList<>(Arrays.asList("thing1", "thing3")), new ArrayList<String>()));
-        add(new Document(1, "Jack's Doc", "HAIIIIIII", new ArrayList<>(Arrays.asList("thing1", "thing55")), new ArrayList<String>()));
+        add(new Document(0, "Elisa's Doc", "HELLLLLLLLOOOOOO", new ArrayList<>(Arrays.asList("thing1", "thing3")), new ArrayList<String>(Arrays.asList("http://www.ofnc.ca/breports.php","http://www.birdscanada.org/"))));
+        add(new Document(1, "Jack's Doc", "HAIIIIIII", new ArrayList<>(Arrays.asList("thing1", "thing55")), new ArrayList<String>(Arrays.asList("https://en.wikipedia.org/wiki/Bird","https://www.getpostman.com/docs/introduction"))));
     }
 
     public void add(Document d) {

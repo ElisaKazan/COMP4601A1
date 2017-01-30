@@ -2,6 +2,7 @@ package edu.carleton.sdamobileapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,8 @@ import android.widget.TextView;
 import edu.carleton.sdamobileapp.dao.Document;
 import edu.carleton.sdamobileapp.dao.DocumentCollection;
 
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +40,22 @@ public class DocumentListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
 
+    private class DownloadDocumentsTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids)
+        {
+            // Connect to server
+            URL url = new URL("http://10.");
+
+            // Download XML
+
+            // Passes to DocumentCollection
+
+            return null;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,10 +65,14 @@ public class DocumentListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
