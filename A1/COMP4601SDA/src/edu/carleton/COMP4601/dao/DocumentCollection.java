@@ -27,6 +27,7 @@ public class DocumentCollection {
 	}
 	
 	public DocumentCollection() {
+		documents = new ArrayList<Document>();
 		loadAll();
 	}
 	
@@ -65,7 +66,7 @@ public class DocumentCollection {
 	
 	public List<Document> findAll(DocumentPredicate predicate) {
 		List<Document> docs = new ArrayList<Document>();
-		for (Document d : docs) {
+		for (Document d : documents) {
 			if (predicate.matches(d)) {
 				docs.add(d);
 			}
@@ -78,6 +79,10 @@ public class DocumentCollection {
 		org.bson.Document converted = d.save();
 
 		Database.getCollection(DOC_COLLECTION_NAME).findOneAndReplace(eq("_id", converted.get("_id")), converted, new FindOneAndReplaceOptions().upsert(true));
+	}
+	
+	public void dbRemove(Document d) {
+		Database.getCollection(DOC_COLLECTION_NAME).deleteOne(eq("_id", d.getId()));
 	}
 
 	public List<Document> getDocuments() {
@@ -102,9 +107,48 @@ public class DocumentCollection {
 		}
 		
 		documents.add(d);
-		
+
 		saveOne(d);
 		
 		return true;
+	}
+
+	public boolean delete(int id) {
+		Document d = findOne(id);
+		if (d == null) {
+			return false;
+		}
+		dbRemove(d);
+		
+		return documents.remove(d);
+	}
+
+	public boolean update(Document d) {
+		if (!documents.contains(d)) {
+			return false;
+		}
+		
+		Document oldDoc = findOne(d.getId());
+		
+		oldDoc.setName(d.getName());
+		oldDoc.setLinks(d.getLinks());
+		oldDoc.setTags(d.getTags());
+		oldDoc.setText(d.getText());
+		
+		saveOne(oldDoc);
+		
+		return true;
+	}
+
+	public String displayDocList(List<Document> docs) {
+		String html = "<html> "+ "<title>" + "COMP4601 Searchable Document Archive" + "</title>" + "<body>";
+
+		for(Document d : docs) {
+			html += d.getDocFormat() + "<br>";
+		}
+
+		html += "</body>" + "</html> ";
+
+		return html;
 	}
 }

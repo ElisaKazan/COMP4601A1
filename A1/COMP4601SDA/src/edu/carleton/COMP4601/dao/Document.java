@@ -13,6 +13,8 @@ public class Document {
 	private String text;
 	private ArrayList<String> tags;
 	private ArrayList<String> links;
+	
+	private static String PREFIX = "/COMP4601SDA/rest/sda/";
 
 	public Document() {
 		tags = new ArrayList<String>();
@@ -27,14 +29,16 @@ public class Document {
 	@SuppressWarnings("unchecked")
 	public Document(org.bson.Document doc) {
 		this.id = doc.getInteger("_id");
-		this.name = doc.getString("text");
+		this.name = doc.getString("name");
+		this.text = doc.getString("text");
 		this.tags = (ArrayList<String>) doc.get("tags");
 		this.links = (ArrayList<String>) doc.get("links");
 	}
 	
-	public Document(int id, String name, ArrayList<String> tags, ArrayList<String> links) {
+	public Document(int id, String name, String text, ArrayList<String> tags, ArrayList<String> links) {
 		this.id = id;
 		this.name = name;
+		this.text = text;
 		this.tags = tags;
 		this.links = links;
 	}
@@ -45,6 +49,7 @@ public class Document {
 		doc.put("_id", id);
 		doc.put("name", name);
 		doc.put("tags", tags);
+		doc.put("text", text);
 		doc.put("links", links);
 		
 		return doc;
@@ -63,11 +68,55 @@ public class Document {
 	
 	public String getDocFormat() {
 		// ID - Name (tag, tag, tag)
-		String format = this.getId() + " - " + this.getName() + " (";
+		String format = "<a href=\"" + PREFIX + id + "\">" + this.getId() + " - " + this.getName() + " (";
+		
 		for(String tag : this.getTags()) {
 			format += tag + ", ";
 		}
-		return format.substring(0, format.length()-3) + ")";
+		
+		format = format.substring(0, format.length()-3) + ")";
+		
+		format += "</a>";
+		
+		return format;
+	}
+	
+	public String getDocFormatLong() {
+		StringBuilder builder = new StringBuilder("<html><body>");
+		
+		builder.append("<ul>");
+		
+		builder.append("<li>Name: " + getName() + "</li>");
+
+		builder.append("<li>ID: " + getId() + "</li>");
+		
+		builder.append("<li>Tags: </li>");
+		builder.append("<ul>");
+		
+		for (String tag : getTags()) {
+			builder.append("<li>" + tag + "</li>");
+		}
+		
+		builder.append("</ul>");
+		
+		builder.append("<li>Links: </li>");
+		builder.append("<ul>");
+		
+		for (String link : getLinks()) {
+			builder.append("<li> <a href=\"" + link + "\">" + link + "</a></li>");
+		}
+
+		builder.append("</ul>");
+
+		builder.append("</ul>");
+		
+		builder.append("Text: <br><pre>");
+		
+		builder.append(getText());
+		
+		builder.append("</pre>");
+		
+		return builder.toString();
 	}
 
 	public Integer getId() {

@@ -33,7 +33,7 @@ public class Main {
 	private static final String name = "COMP4601 Searchable Document Archive";
 
 	public Main() {
-
+		
 	}
 
 	@GET
@@ -65,25 +65,16 @@ public class Main {
 	@Path("documents")
 	@Produces(MediaType.TEXT_HTML)
 	public String getDocumentsHTML() {
-		DocumentCollection documents = DocumentCollection.getInstance();
-		String html = "<html> "+ "<title>" + name + "</title>" + "<body>";
-
-		for(Document d : documents.getDocuments()) {
-			html += d.getDocFormat() + "<br>";
-		}
-
-		html += "</body>" + "</html> ";
-
-		return html;
+		return DocumentCollection.getInstance().displayDocList(DocumentCollection.getInstance().getDocuments());
 	}
-	
+
 	@POST
 	@Produces(MediaType.TEXT_HTML)
 	@Consumes("application/x-www-form-urlencoded")
 	public Response createDocument(MultivaluedMap<String, String> formParams) {
 		if (!(formParams.containsKey("name") || formParams.containsKey("id") || 
-				formParams.containsKey("tags") || formParams.containsKey("links"))) {
-			return Response.status(400).entity("Not all necessary parameters provided.").build();
+				formParams.containsKey("tags") || formParams.containsKey("links") || formParams.containsKey("text"))) {
+			return Response.status(204).entity("Not all necessary parameters provided.").build();
 		}
 		
 		ArrayList<String> tags = new ArrayList<String>();
@@ -91,18 +82,20 @@ public class Main {
 		ArrayList<String> links = new ArrayList<String>();
 		links.addAll(formParams.get("links"));
 		String name = formParams.getFirst("name");
+		String text = formParams.getFirst("text");
 		int id;
 		try {
 			id = new Integer(formParams.getFirst("id")).intValue();
 		} catch (NumberFormatException e) {
-			return Response.status(400).entity("Id must be an integer").build();
+			return Response.status(204).entity("Id must be an integer").build();
 		}
 		
-		Document d = new Document(id, name, tags, links);
+		Document d = new Document(id, name, text, tags, links);
 		
 		// Returns false for already existing Document
 		if (!DocumentCollection.getInstance().add(d)) {
-			return Response.status(409).entity("Document with that ID already exists").build();
+			// 204 from spec
+			return Response.status(204).entity("Document with that ID already exists").build();
 		}
 
 		return Response.ok().entity("Created Document successfully!").build();
@@ -111,5 +104,15 @@ public class Main {
 	@Path("{id}")
 	public DocumentAction getDocument(@PathParam("id") String id) {
 		return new DocumentAction(uriInfo, request, id);
+	}
+
+	@Path("search/{tags}")
+	public SearchAction getSearch(@PathParam("tags") String tags) {
+		return new SearchAction(uriInfo, request, tags);
+	}
+	
+    @Path("delete/{tags}")
+	public DeleteAction getDelete(@PathParam("tags") String tags) {
+		return new DeleteAction(uriInfo, request, tags);
 	}
 }
