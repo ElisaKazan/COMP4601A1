@@ -1,22 +1,27 @@
 package edu.carleton.sdamobileapp;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,15 +32,13 @@ import org.xmlpull.v1.XmlPullParserException;
 import edu.carleton.sdamobileapp.dao.Document;
 import edu.carleton.sdamobileapp.dao.DocumentCollection;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.net.URLEncoder;
 import java.util.List;
 
 import static edu.carleton.sdamobileapp.dao.DocumentCollection.PREFIX;
@@ -55,14 +58,92 @@ public class DocumentListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
     private RecyclerView recyclerView;
+    private DocumentCollection collection;
 
-    private class DownloadDocumentsTask extends AsyncTask<Void, Void, Void> {
+    private class DeleteDocuments extends AsyncTask<Void, Void, Boolean> {
+        private String tags;
+        private String errorText;
+
+        public DeleteDocuments(String tags) {
+            this.tags = tags;
+        }
+
         @Override
-        protected Void doInBackground(Void... voids)
+        protected Boolean doInBackground(Void... params) {
+            try {
+                URL url = new URL(PREFIX + "/delete/" + tags);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+                BufferedReader r = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+                if (urlConnection.getResponseCode() != 200) {
+                    StringBuilder builder = new StringBuilder();
+
+                    String line;
+
+                    while ((line = r.readLine()) != null) {
+                        builder.append(line).append("\n");
+                    }
+
+                    errorText = builder.toString();
+
+                    return false;
+                }
+
+
+
+                return true;
+            } catch (IOException e) {
+                errorText = e.getMessage();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                // Success
+                Toast.makeText(DocumentListActivity.this, "Delete successful!", Toast.LENGTH_LONG).show();
+                // Reload the documents
+                if (getIntent().getExtras() == null) {
+                    collection = DocumentCollection.getMainInstance();
+                    new DownloadDocumentsTask().execute();
+                }
+                else {
+                    collection = new DocumentCollection();
+                    new DownloadDocumentsTask(getIntent().getExtras().getStringArray("tags")).execute();
+                }
+            }
+            else {
+                Toast.makeText(DocumentListActivity.this, "Delete by tags failed: " + errorText, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private class DownloadDocumentsTask extends AsyncTask<Void, Void, Boolean> {
+        String errorText;
+        String[] tags;
+
+        public DownloadDocumentsTask() {
+
+        }
+
+        public DownloadDocumentsTask(String[] tags) {
+            this.tags = tags;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids)
         {
+            URL url;
             // Connect to server
             try {
-                URL url = new URL(PREFIX + "/documents");
+                if (tags == null) {
+                    url = new URL(PREFIX + "/documents");
+                }
+                else {
+                    url = new URL(PREFIX + "/search/" + TextUtils.join(":", tags));
+                }
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestProperty("Accept", "application/xml");
                 BufferedReader r = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
@@ -76,26 +157,33 @@ public class DocumentListActivity extends AppCompatActivity {
                         builder.append(line).append("\n");
                     }
 
-                    String text = builder.toString();
-                    Toast.makeText(DocumentListActivity.this, "Cannot get documents: " + text, Toast.LENGTH_LONG).show();
+                    errorText = builder.toString();
+                    return false;
                 }
 
                 XmlPullParser parser = Xml.newPullParser();
                 parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
                 parser.setInput(urlConnection.getInputStream(), null);
-                DocumentCollection.getInstance().addDocumentsFromXml(parser);
+                collection.addDocumentsFromXml(parser);
             } catch (IOException | XmlPullParserException e) {
                 e.printStackTrace();
+                errorText = e.getMessage();
+                return false;
             }
 
-            return null;
+            return true;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            recyclerView.removeAllViews();
-            recyclerView.getAdapter().notifyDataSetChanged();
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if (result) {
+                recyclerView.removeAllViews();
+                recyclerView.getAdapter().notifyDataSetChanged();
+            }
+            else {
+                Toast.makeText(DocumentListActivity.this, "Download failed: " + errorText, Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -108,7 +196,14 @@ public class DocumentListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        new DownloadDocumentsTask().execute();
+        if (getIntent().getExtras() == null) {
+            collection = DocumentCollection.getMainInstance();
+            new DownloadDocumentsTask().execute();
+        }
+        else {
+            collection = new DocumentCollection();
+            new DownloadDocumentsTask(getIntent().getExtras().getStringArray("tags")).execute();
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -140,7 +235,7 @@ public class DocumentListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DocumentCollection.getInstance().getItems()));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(collection.getItems()));
     }
 
     public class SimpleItemRecyclerViewAdapter
@@ -221,5 +316,55 @@ public class DocumentListActivity extends AppCompatActivity {
         inflater.inflate(R.menu.menu, menu);
 
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.deleteTags:
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Delete by Tags");
+
+            final EditText input = new EditText(this);
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(input);
+
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    new DeleteDocuments(input.getText().toString()).execute();
+                }
+            });
+
+            builder.setNegativeButton("Cancel", null);
+            builder.show();
+            return true;
+        }
+        case R.id.searchTags:
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Search by Tags");
+
+            final EditText input = new EditText(this);
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(input);
+
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent launchDocumentList = new Intent(DocumentListActivity.this, DocumentListActivity.class);
+                    launchDocumentList.putExtra("tags", input.getText().toString().split(":"));
+                    startActivity(launchDocumentList);
+                }
+            });
+
+            builder.setNegativeButton("Cancel", null);
+            builder.show();
+            return true;
+        }
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 }

@@ -6,21 +6,15 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -112,8 +106,11 @@ public class DocumentDetailFragment extends Fragment {
 
                 // It succeeded
             } catch (IOException e) {
+                errorText = e.getMessage();
                 e.printStackTrace();
+                return false;
             }
+
             return true;
         }
 
@@ -163,7 +160,7 @@ public class DocumentDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
-            mItem = DocumentCollection.getInstance().get(Integer.valueOf(getArguments().getString(ARG_ITEM_ID)));
+            mItem = DocumentCollection.getMainInstance().get(Integer.valueOf(getArguments().getString(ARG_ITEM_ID)));
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);

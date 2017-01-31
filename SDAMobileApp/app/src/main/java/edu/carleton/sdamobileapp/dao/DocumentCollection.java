@@ -60,7 +60,7 @@ public class DocumentCollection {
         return documentsMap.get(id);
     }
 
-    public static DocumentCollection getInstance() {
+    public static DocumentCollection getMainInstance() {
         if (documentCollection == null) {
             documentCollection = new DocumentCollection();
         }
