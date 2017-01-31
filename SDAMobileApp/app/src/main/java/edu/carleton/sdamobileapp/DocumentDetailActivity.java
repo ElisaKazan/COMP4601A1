@@ -124,7 +124,7 @@ public class DocumentDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            if (getIntent().getExtras().containsKey(DocumentDetailFragment.ARG_ITEM_ID))
+            if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(DocumentDetailFragment.ARG_ITEM_ID))
             {
                 // Specific element editing
                 arguments.putString(DocumentDetailFragment.ARG_ITEM_ID,
