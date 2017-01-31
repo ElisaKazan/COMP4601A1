@@ -126,8 +126,14 @@ public class DocumentDetailActivity extends AppCompatActivity {
             Bundle arguments = new Bundle();
             if (arguments.containsKey(DocumentDetailFragment.ARG_ITEM_ID))
             {
+                // Specific element editing
                 arguments.putString(DocumentDetailFragment.ARG_ITEM_ID,
                         getIntent().getStringExtra(DocumentDetailFragment.ARG_ITEM_ID));
+            }
+            else {
+                // Adding new element
+                isEditing = true;
+                fab.setImageDrawable(getResources().getDrawable(android.R.drawable.checkbox_off_background));
             }
             fragment = new DocumentDetailFragment();
             fragment.setArguments(arguments);
