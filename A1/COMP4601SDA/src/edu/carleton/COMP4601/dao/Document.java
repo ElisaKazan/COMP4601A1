@@ -74,7 +74,7 @@ public class Document {
 			format += tag + ", ";
 		}
 		
-		format = format.substring(0, format.length()-3) + ")";
+		format = format.substring(0, format.length()-2) + ")";
 		
 		format += "</a>";
 		

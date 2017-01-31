@@ -1,13 +1,9 @@
 package edu.carleton.sdamobileapp;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Xml;
 import android.view.View;
@@ -22,21 +18,6 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-
-import edu.carleton.sdamobileapp.dao.DocumentCollection;
-
-import static edu.carleton.sdamobileapp.dao.DocumentCollection.PREFIX;
-
 /**
  * An activity representing a single Document detail screen. This
  * activity is only used narrow width devices. On tablet-size devices,
@@ -143,8 +124,11 @@ public class DocumentDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(DocumentDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(DocumentDetailFragment.ARG_ITEM_ID));
+            if (arguments.containsKey(DocumentDetailFragment.ARG_ITEM_ID))
+            {
+                arguments.putString(DocumentDetailFragment.ARG_ITEM_ID,
+                        getIntent().getStringExtra(DocumentDetailFragment.ARG_ITEM_ID));
+            }
             fragment = new DocumentDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

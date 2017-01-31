@@ -41,12 +41,14 @@ import static edu.carleton.sdamobileapp.dao.DocumentCollection.PREFIX;
  * on handsets.
  */
 public class DocumentDetailFragment extends Fragment {
+
     private class SaveDocumentTask extends AsyncTask<Void, Void, Boolean> {
         String errorText = null;
         ArrayList<String> tags = null;
         ArrayList<String> links = null;
         String name = null;
         String text = null;
+        int id;
 
         @Override
         protected void onPreExecute() {
@@ -58,13 +60,19 @@ public class DocumentDetailFragment extends Fragment {
             links = new ArrayList<>(Arrays.asList(((EditText) rootView.findViewById(R.id.document_links)).getText().toString().split(", ?")));
             name = ((EditText) rootView.findViewById(R.id.document_name)).getText().toString();
             text = ((EditText) rootView.findViewById(R.id.document_text)).getText().toString();
+            if (mItem == null) {
+                id = new Random().nextInt(1000);
+            }
+            else {
+                id = mItem.getId();
+            }
         }
 
         @Override
         protected Boolean doInBackground(Void... voids) {
             // Connect to server
             try {
-                URL url = new URL(PREFIX + "/" + (mItem == null ? "" : mItem.getId()));
+                URL url = new URL(PREFIX + "/" + (mItem == null ? "" : id));
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 // POST works for either
                 urlConnection.setRequestMethod("POST");
@@ -73,7 +81,7 @@ public class DocumentDetailFragment extends Fragment {
                 urlConnection.setDoOutput(true);
                 PrintStream os = new PrintStream(urlConnection.getOutputStream());
 
-                StringBuilder queryStringBuilder = new StringBuilder("id=" + String.valueOf(mItem.getId()) +
+                StringBuilder queryStringBuilder = new StringBuilder("id=" + String.valueOf(id) +
                         "&name=" + URLEncoder.encode(name, "UTF-8") + "&text=" + URLEncoder.encode(text, "UTF-8"));
 
                 for (String tag : tags) {
@@ -106,9 +114,6 @@ public class DocumentDetailFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
-
             return true;
         }
 
@@ -117,14 +122,14 @@ public class DocumentDetailFragment extends Fragment {
             if (result) {
                 if (mItem == null) {
                     mItem = new Document();
-                    //TODO: Pls generate actual ID from what the user specified
-                    mItem.setId(new Random().nextInt(1000));
                 }
 
                 mItem.setName(name);
                 mItem.setText(text);
                 mItem.setTags(tags);
                 mItem.setLinks(links);
+                mItem.setId(id); //TODO: pls generate actual ID from what the user specified
+
 
                 Toast.makeText(getActivity(), "Upload successful!", Toast.LENGTH_LONG).show();
             }
@@ -183,6 +188,23 @@ public class DocumentDetailFragment extends Fragment {
             ((EditText) rootView.findViewById(R.id.document_tags)).setText(TextUtils.join(", ", mItem.getTags()));
             ((EditText) rootView.findViewById(R.id.document_links)).setText(TextUtils.join(", ", mItem.getLinks()));
             ((EditText) rootView.findViewById(R.id.document_text)).setText(mItem.getText());
+        }
+        else {
+            // Creating a new document
+
+            // Use default data
+            ((EditText) rootView.findViewById(R.id.document_name)).setText("Document Name");
+            ((EditText) rootView.findViewById(R.id.document_tags)).setText("tag1, tag2");
+            ((EditText) rootView.findViewById(R.id.document_links)).setText("www.example.com");
+            ((EditText) rootView.findViewById(R.id.document_text)).setText("This is the default text for a document.");
+
+            // Make editable
+            ((EditText) rootView.findViewById(R.id.document_name)).setEnabled(true);
+            ((EditText) rootView.findViewById(R.id.document_tags)).setEnabled(true);
+            ((EditText) rootView.findViewById(R.id.document_links)).setEnabled(true);
+            ((EditText) rootView.findViewById(R.id.document_text)).setEnabled(true);
+
+            // Save will happen when the stop is clicked
         }
 
         return rootView;

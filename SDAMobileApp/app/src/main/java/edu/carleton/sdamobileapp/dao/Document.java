@@ -1,14 +1,10 @@
 package edu.carleton.sdamobileapp.dao;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class Document {
