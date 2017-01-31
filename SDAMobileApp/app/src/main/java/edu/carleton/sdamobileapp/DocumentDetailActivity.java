@@ -87,50 +87,8 @@ public class DocumentDetailActivity extends AppCompatActivity {
         client.disconnect();
     }
 
-    private class DownloadDocumentsTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            // Connect to server
-            try {
-                URL url = new URL(PREFIX + "/");
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("PUT");
-                urlConnection.setDoInput(true);
-                urlConnection.setDoOutput(true);
-
-                BufferedReader r = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-
-                if (urlConnection.getResponseCode() != 200) {
-                    StringBuilder builder = new StringBuilder();
-
-                    String line;
-
-                    while ((line = r.readLine()) != null) {
-                        builder.append(line).append("\n");
-                    }
-
-                    String text = builder.toString();
-                    Toast.makeText(DocumentDetailActivity.this, "Cannot Update document: " + text, Toast.LENGTH_LONG).show();
-                }
-
-                XmlPullParser parser = Xml.newPullParser();
-                parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-                parser.setInput(urlConnection.getInputStream(), null);
-                DocumentCollection.getInstance().addDocumentsFromXml(parser);
-            } catch (IOException | XmlPullParserException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-    }
-
     private boolean isEditing = false;
+    private DocumentDetailFragment fragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +113,7 @@ public class DocumentDetailActivity extends AppCompatActivity {
                     fab.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_edit));
 
                     // Save the new info and add to database
+                    fragment.saveDetails();
 
                 } else {
                     // Start editing
@@ -186,7 +145,7 @@ public class DocumentDetailActivity extends AppCompatActivity {
             Bundle arguments = new Bundle();
             arguments.putString(DocumentDetailFragment.ARG_ITEM_ID,
                     getIntent().getStringExtra(DocumentDetailFragment.ARG_ITEM_ID));
-            DocumentDetailFragment fragment = new DocumentDetailFragment();
+            fragment = new DocumentDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.document_detail_container, fragment)

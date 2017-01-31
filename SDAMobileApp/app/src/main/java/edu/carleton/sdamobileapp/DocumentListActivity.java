@@ -13,6 +13,8 @@ import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Xml;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -207,5 +209,13 @@ public class DocumentListActivity extends AppCompatActivity {
                 return super.toString() + " '" + mNameView.getText() + "'";
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+
+        return true;
     }
 }
