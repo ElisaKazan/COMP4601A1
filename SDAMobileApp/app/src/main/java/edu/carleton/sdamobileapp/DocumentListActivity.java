@@ -206,15 +206,29 @@ public class DocumentListActivity extends AppCompatActivity {
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                // Switch to Detail Fragment where we will create a new document
-                Context context = view.getContext();
-                Intent intent = new Intent(context, DocumentDetailActivity.class);
+                // Alert box for id
+                AlertDialog.Builder builder = new AlertDialog.Builder(DocumentListActivity.this);
+                builder.setTitle("Add New Document");
 
-                context.startActivity(intent);
+                final EditText input = new EditText(DocumentListActivity.this);
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent launchNewDoc = new Intent(DocumentListActivity.this, DocumentDetailActivity.class);
+                        launchNewDoc.putExtra("newID", input.getText().toString());
+                        startActivity(launchNewDoc);
+                    }
+                });
+                builder.setNegativeButton("Cancel", null);
+                builder.show();
             }
         });
 

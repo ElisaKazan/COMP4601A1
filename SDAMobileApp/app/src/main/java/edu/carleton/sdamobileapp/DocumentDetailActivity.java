@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Xml;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
@@ -141,14 +143,18 @@ public class DocumentDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(DocumentDetailFragment.ARG_ITEM_ID))
+            if (getIntent().getExtras().containsKey(DocumentDetailFragment.ARG_ITEM_ID))
             {
                 // Specific element editing
                 arguments.putString(DocumentDetailFragment.ARG_ITEM_ID,
                         getIntent().getStringExtra(DocumentDetailFragment.ARG_ITEM_ID));
             }
-            else {
+            else if (getIntent().getExtras().containsKey("newID")){
                 // Adding new element
+
+                // This is the important stuff
+
+                arguments.putString("newID", getIntent().getExtras().getString("newID"));
                 isEditing = true;
                 fab.setImageDrawable(getResources().getDrawable(android.R.drawable.checkbox_off_background));
                 deleteFab.setVisibility(View.INVISIBLE);

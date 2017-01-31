@@ -36,6 +36,8 @@ import static edu.carleton.sdamobileapp.dao.DocumentCollection.PREFIX;
  */
 public class DocumentDetailFragment extends Fragment {
 
+    private int newId;
+
     private class SaveDocumentTask extends AsyncTask<Void, Void, Boolean> {
         String errorText = null;
         ArrayList<String> tags = null;
@@ -55,7 +57,7 @@ public class DocumentDetailFragment extends Fragment {
             name = ((EditText) rootView.findViewById(R.id.document_name)).getText().toString();
             text = ((EditText) rootView.findViewById(R.id.document_text)).getText().toString();
             if (mItem == null) {
-                id = new Random().nextInt(1000);
+                id = newId;
             }
             else {
                 id = mItem.getId();
@@ -125,7 +127,7 @@ public class DocumentDetailFragment extends Fragment {
                 mItem.setText(text);
                 mItem.setTags(tags);
                 mItem.setLinks(links);
-                mItem.setId(id); //TODO: pls generate actual ID from what the user specified
+                mItem.setId(id);
 
 
                 Toast.makeText(getActivity(), "Upload successful!", Toast.LENGTH_LONG).show();
@@ -168,6 +170,9 @@ public class DocumentDetailFragment extends Fragment {
                 appBarLayout.setTitle("Document " + mItem.getId());
             }
         }
+        else if (getArguments().containsKey("newID")) {
+            newId = Integer.valueOf(getArguments().getString("newID"));
+        }
     }
 
     public void saveDetails() {
@@ -188,7 +193,7 @@ public class DocumentDetailFragment extends Fragment {
         }
         else {
             // Creating a new document
-            
+
             // Use default data
             ((EditText) rootView.findViewById(R.id.document_name)).setText("Document Name");
             ((EditText) rootView.findViewById(R.id.document_tags)).setText("tag1, tag2");
