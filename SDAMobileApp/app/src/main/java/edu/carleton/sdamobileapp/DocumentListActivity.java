@@ -52,6 +52,19 @@ import static edu.carleton.sdamobileapp.dao.DocumentCollection.PREFIX;
  * item details side-by-side using two vertical panes.
  */
 public class DocumentListActivity extends AppCompatActivity {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onResume() {
+        recyclerView.removeAllViews();
+        recyclerView.getAdapter().notifyDataSetChanged();
+
+        super.onResume();
+    }
+
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -214,7 +227,7 @@ public class DocumentListActivity extends AppCompatActivity {
                 Context context = view.getContext();
                 Intent intent = new Intent(context, DocumentDetailActivity.class);
 
-                context.startActivity(intent);
+                DocumentListActivity.this.startActivityForResult(intent, 1);
             }
         });
 

@@ -176,6 +176,11 @@ public class Document {
     }
 
     @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
     public boolean equals(Object d) {
         return d == null || !(d instanceof Document) ? false : ((Document)d).id == this.id;
     }

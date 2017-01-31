@@ -127,12 +127,71 @@ public class DocumentDetailFragment extends Fragment {
                 mItem.setLinks(links);
                 mItem.setId(id); //TODO: pls generate actual ID from what the user specified
 
-
                 Toast.makeText(getActivity(), "Upload successful!", Toast.LENGTH_LONG).show();
             }
             else {
                 Toast.makeText(getActivity(), errorText, Toast.LENGTH_LONG).show();
             }
+            super.onPostExecute(result);
+        }
+    }
+
+    private class DeleteDocumentTask extends AsyncTask<Void, Void, Boolean> {
+
+        String errorText;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            // Connect to server
+            try {
+                URL url = new URL(PREFIX + "/" + mItem.getId());
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                // POST works for either
+                urlConnection.setRequestMethod("DELETE");
+                urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+                BufferedReader r = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+                if (urlConnection.getResponseCode() != 200) {
+                    StringBuilder builder = new StringBuilder();
+
+                    String line;
+
+                    while ((line = r.readLine()) != null) {
+                        builder.append(line).append("\n");
+                    }
+
+                    errorText = builder.toString();
+
+                    return false;
+                }
+                // It succeeded
+            } catch (IOException e) {
+                errorText = e.getMessage();
+                e.printStackTrace();
+                return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                Toast.makeText(getActivity(), "Delete successful!", Toast.LENGTH_LONG).show();
+                getActivity().setResult(0);
+                getActivity().finish();
+            }
+            else {
+                Toast.makeText(getActivity(), errorText, Toast.LENGTH_LONG).show();
+            }
+
+            DocumentCollection.getMainInstance().removeDocument(mItem);
             super.onPostExecute(result);
         }
     }
@@ -172,6 +231,10 @@ public class DocumentDetailFragment extends Fragment {
 
     public void saveDetails() {
         new SaveDocumentTask().execute();
+    }
+
+    public void delete() {
+        new DeleteDocumentTask().execute();
     }
 
     @Override

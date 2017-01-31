@@ -34,6 +34,11 @@ public class DocumentCollection {
         documentsMap.put(d.getId(), d);
     }
 
+    public void removeDocument(Document d) {
+        System.out.println(documents.remove(d));
+        documentsMap.remove(d);
+    }
+
     public void addDocumentsFromXml(XmlPullParser parser) {
         documents.clear();
         documentsMap.clear();

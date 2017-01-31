@@ -116,9 +116,7 @@ public class DocumentDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                // Delete the document
-
-                // Go back to the list activity
+                fragment.delete();
             }
         });
 
