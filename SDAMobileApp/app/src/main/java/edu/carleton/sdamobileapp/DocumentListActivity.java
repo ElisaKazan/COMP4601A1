@@ -338,7 +338,7 @@ public class DocumentListActivity extends AppCompatActivity {
         case R.id.deleteTags:
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Delete by Tags");
+            builder.setTitle("Please enter a colon-separated list of tags to delete");
 
             final EditText input = new EditText(this);
             input.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -358,7 +358,7 @@ public class DocumentListActivity extends AppCompatActivity {
         case R.id.searchTags:
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Search by Tags");
+            builder.setTitle("Please enter a colon-separated list of tags to search for");
 
             final EditText input = new EditText(this);
             input.setInputType(InputType.TYPE_CLASS_TEXT);
