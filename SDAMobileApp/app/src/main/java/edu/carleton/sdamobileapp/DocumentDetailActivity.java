@@ -79,6 +79,8 @@ public class DocumentDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton deleteFab = (FloatingActionButton) findViewById(R.id.delete);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,15 +95,30 @@ public class DocumentDetailActivity extends AppCompatActivity {
                     // Stop editing
                     fab.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_edit));
 
+                    // Show delete
+                    deleteFab.setVisibility(View.VISIBLE);
+
                     // Save the new info and add to database
                     fragment.saveDetails();
 
                 } else {
                     // Start editing
                     fab.setImageDrawable(getResources().getDrawable(android.R.drawable.checkbox_off_background));
+                    deleteFab.setVisibility(View.INVISIBLE);
                 }
 
                 isEditing = !isEditing;
+            }
+        });
+
+        deleteFab.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                // Delete the document
+
+                // Go back to the list activity
             }
         });
 
@@ -134,6 +151,7 @@ public class DocumentDetailActivity extends AppCompatActivity {
                 // Adding new element
                 isEditing = true;
                 fab.setImageDrawable(getResources().getDrawable(android.R.drawable.checkbox_off_background));
+                deleteFab.setVisibility(View.INVISIBLE);
             }
             fragment = new DocumentDetailFragment();
             fragment.setArguments(arguments);

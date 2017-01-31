@@ -52,4 +52,16 @@
         app:rippleColor="?attr/colorBackgroundFloating"
         app:backgroundTint="@color/colorAccent"/>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchor="@+id/document_detail_container"
+        app:srcCompat="@android:drawable/ic_delete"
+        app:rippleColor="?attr/colorBackgroundFloating"
+        app:backgroundTint="@color/colorAccent"
+        app:layout_anchorGravity="top|center_horizontal"
+        android:layout_gravity="center_vertical|center_horizontal"/>
+
 </android.support.design.widget.CoordinatorLayout>

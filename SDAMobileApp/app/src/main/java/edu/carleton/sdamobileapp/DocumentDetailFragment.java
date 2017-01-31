@@ -191,7 +191,7 @@ public class DocumentDetailFragment extends Fragment {
         }
         else {
             // Creating a new document
-
+            
             // Use default data
             ((EditText) rootView.findViewById(R.id.document_name)).setText("Document Name");
             ((EditText) rootView.findViewById(R.id.document_tags)).setText("tag1, tag2");
