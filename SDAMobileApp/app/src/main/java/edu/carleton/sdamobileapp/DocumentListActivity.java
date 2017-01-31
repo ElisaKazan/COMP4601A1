@@ -118,14 +118,7 @@ public class DocumentListActivity extends AppCompatActivity {
                 // Success
                 Toast.makeText(DocumentListActivity.this, "Delete successful!", Toast.LENGTH_LONG).show();
                 // Reload the documents
-                if (getIntent().getExtras() == null) {
-                    collection = DocumentCollection.getMainInstance();
-                    new DownloadDocumentsTask().execute();
-                }
-                else {
-                    collection = new DocumentCollection();
-                    new DownloadDocumentsTask(getIntent().getExtras().getStringArray("tags")).execute();
-                }
+                new DownloadDocumentsTask().execute();
             }
             else {
                 Toast.makeText(DocumentListActivity.this, "Delete by tags failed: " + errorText, Toast.LENGTH_LONG).show();
@@ -226,7 +219,7 @@ public class DocumentListActivity extends AppCompatActivity {
 
                 // Alert box for id
                 AlertDialog.Builder builder = new AlertDialog.Builder(DocumentListActivity.this);
-                builder.setTitle("Add New Document");
+                builder.setTitle("Enter an ID for New Document:");
 
                 final EditText input = new EditText(DocumentListActivity.this);
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
