@@ -50,7 +50,7 @@ public class SearchAction {
 		
 		// TODO: This doesn't quite work. Needs to be discovered by jersey.
 		if (documents.size() == 0) {
-			throw new DocumentNotFoundException(true);
+			return Response.status(204).entity("Documents not found.").build();
 		}
 		
 		return Response.ok().entity(DocumentCollection.getInstance().displayDocList(documents)).build();
@@ -62,7 +62,7 @@ public class SearchAction {
 		List<Document> documents = DocumentCollection.getInstance().findAll(new TagSearchPredicate());
 		
 		if (documents.size() == 0) {
-			throw new DocumentNotFoundException(true);
+			return null;
 		}
 		
 		return documents;
