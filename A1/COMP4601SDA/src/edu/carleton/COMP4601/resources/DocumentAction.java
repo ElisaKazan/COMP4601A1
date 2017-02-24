@@ -1,4 +1,4 @@
-package edu.carleton.COMP4601.resources;
+package edu.carleton.comp4601.resources;
 
 import java.util.ArrayList;
 
@@ -15,8 +15,9 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import edu.carleton.COMP4601.dao.Document;
-import edu.carleton.COMP4601.dao.DocumentCollection;
+import edu.carleton.comp4601.dao.Document;
+import edu.carleton.comp4601.dao.DocumentCollection;
+import edu.carleton.comp4601.dao.DocumentHelper;
 
 public class DocumentAction {
 	@Context
@@ -79,7 +80,13 @@ public class DocumentAction {
 			return Response.status(204).entity("Id must be an integer").build();
 		}
 
-		Document d = new Document(id, name, text, tags, links);
+		Document d = new Document(id);
+		
+		d.setName(name);
+		d.setText(text);
+		d.setLinks(links);
+		d.setTags(tags);
+		d.setScore(-1.0f);
 
 		if (!DocumentCollection.getInstance().update(d)) {
 			return Response.status(204).entity("Cannot update doc that doesn't exist.").build();
@@ -97,7 +104,7 @@ public class DocumentAction {
 			return Response.status(404).entity("Document not Found.").build();
 		}
 
-		return Response.ok().entity("<html><body>" + doc.getDocFormatLong() + "</body></html>").build();
+		return Response.ok().entity("<html><body>" + DocumentHelper.getDocFormatLong(doc) + "</body></html>").build();
 	}
 
 	@GET

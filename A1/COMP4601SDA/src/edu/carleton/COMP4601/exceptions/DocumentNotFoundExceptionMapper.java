@@ -1,4 +1,4 @@
-package edu.carleton.COMP4601.exceptions;
+package edu.carleton.comp4601.exceptions;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;

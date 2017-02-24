@@ -1,4 +1,4 @@
-package edu.carleton.COMP4601.dao;
+package edu.carleton.comp4601.dao;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.mongodb.client.model.FindOneAndReplaceOptions;
 
-import edu.carleton.COMP4601.db.Database;
+import edu.carleton.comp4601.db.Database;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -76,7 +76,7 @@ public class DocumentCollection {
 	}
 	
 	public void saveOne(Document d) {
-		org.bson.Document converted = d.save();
+		org.bson.Document converted = DocumentHelper.save(d);
 
 		Database.getCollection(DOC_COLLECTION_NAME).findOneAndReplace(eq("_id", converted.get("_id")), converted, new FindOneAndReplaceOptions().upsert(true));
 	}
@@ -144,7 +144,7 @@ public class DocumentCollection {
 		String html = "<html> "+ "<title>" + "COMP4601 Searchable Document Archive" + "</title>" + "<body>";
 
 		for(Document d : docs) {
-			html += d.getDocFormat() + "<br>";
+			html += DocumentHelper.getDocFormat(d) + "<br>";
 		}
 
 		html += "</body>" + "</html> ";

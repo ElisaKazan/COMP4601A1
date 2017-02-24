@@ -1,4 +1,4 @@
-package edu.carleton.COMP4601.resources;
+package edu.carleton.comp4601.resources;
 
 import java.util.List;
 
@@ -10,9 +10,9 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import edu.carleton.COMP4601.dao.Document;
-import edu.carleton.COMP4601.dao.DocumentCollection;
-import edu.carleton.COMP4601.exceptions.DocumentNotFoundException;
+import edu.carleton.comp4601.dao.Document;
+import edu.carleton.comp4601.dao.DocumentCollection;
+import edu.carleton.comp4601.exceptions.DocumentNotFoundException;
 
 public class DeleteAction {
 	@Context

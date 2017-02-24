@@ -1,4 +1,4 @@
-package edu.carleton.COMP4601.db;
+package edu.carleton.comp4601.db;
 
 import org.bson.Document;
 

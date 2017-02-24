@@ -1,4 +1,4 @@
-package edu.carleton.COMP4601.exceptions;
+package edu.carleton.comp4601.exceptions;
 
 public class DocumentNotFoundException extends Exception {
 	private static final long serialVersionUID = 9032862252061375995L;

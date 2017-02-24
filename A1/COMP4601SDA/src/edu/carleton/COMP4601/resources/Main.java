@@ -1,4 +1,4 @@
-package edu.carleton.COMP4601.resources;
+package edu.carleton.comp4601.resources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +16,8 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import edu.carleton.COMP4601.dao.Document;
-import edu.carleton.COMP4601.dao.DocumentCollection;
+import edu.carleton.comp4601.dao.Document;
+import edu.carleton.comp4601.dao.DocumentCollection;
 
 
 @Path("/sda")
@@ -91,7 +91,7 @@ public class Main {
 			return Response.status(204).entity("Id must be an integer").build();
 		}
 		
-		Document d = new Document(id, name, text, tags, links, -1);
+		Document d = new Document(id);
 		
 		// Returns false for already existing Document
 		if (!DocumentCollection.getInstance().add(d)) {
