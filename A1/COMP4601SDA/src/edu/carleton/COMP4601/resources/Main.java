@@ -91,7 +91,7 @@ public class Main {
 			return Response.status(204).entity("Id must be an integer").build();
 		}
 		
-		Document d = new Document(id, name, text, tags, links);
+		Document d = new Document(id, name, text, tags, links, -1);
 		
 		// Returns false for already existing Document
 		if (!DocumentCollection.getInstance().add(d)) {

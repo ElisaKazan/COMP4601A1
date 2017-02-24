@@ -33,14 +33,16 @@ public class Document {
 		this.text = doc.getString("text");
 		this.tags = (ArrayList<String>) doc.get("tags");
 		this.links = (ArrayList<String>) doc.get("links");
+		this.score = doc.getDouble("score").floatValue();
 	}
 	
-	public Document(int id, String name, String text, ArrayList<String> tags, ArrayList<String> links) {
+	public Document(int id, String name, String text, ArrayList<String> tags, ArrayList<String> links, float score) {
 		this.id = id;
 		this.name = name;
 		this.text = text;
 		this.tags = tags;
 		this.links = links;
+		this.score = score;
 	}
 
 	public org.bson.Document save() {
@@ -51,6 +53,7 @@ public class Document {
 		doc.put("tags", tags);
 		doc.put("text", text);
 		doc.put("links", links);
+		doc.put("score", score);
 		
 		return doc;
 	}
