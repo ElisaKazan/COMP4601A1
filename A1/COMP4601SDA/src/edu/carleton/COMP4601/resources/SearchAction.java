@@ -22,7 +22,13 @@ public class SearchAction {
 
 	String[] tags;
 	
-	private class TagSearchPredicate implements DocumentCollection.DocumentPredicate {
+	public static class TagSearchPredicate implements DocumentCollection.DocumentPredicate {
+		String[] tags;
+
+		public TagSearchPredicate(String[] tags) {
+			this.tags = tags;
+		}
+		
 		@Override
 		public boolean matches(Document d) {
 			for (String tag : tags) {
@@ -46,7 +52,7 @@ public class SearchAction {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Response doSearch() throws DocumentNotFoundException {
-		List<Document> documents = DocumentCollection.getInstance().findAll(new TagSearchPredicate());
+		List<Document> documents = DocumentCollection.getInstance().findAll(new TagSearchPredicate(tags));
 		
 		if (documents.size() == 0) {
 			return Response.status(204).entity("Documents not found.").build();
@@ -58,7 +64,7 @@ public class SearchAction {
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	public List<Document> doSearchXML() throws DocumentNotFoundException {
-		List<Document> documents = DocumentCollection.getInstance().findAll(new TagSearchPredicate());
+		List<Document> documents = DocumentCollection.getInstance().findAll(new TagSearchPredicate(tags));
 		
 		if (documents.size() == 0) {
 			return null;

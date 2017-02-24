@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>COMP4601-SDA</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <servlet-name>COMP4601 Searchable Document Archive V2.1</servlet-name>
+    <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+    <init-param>
+      <param-name>com.sun.jersey.config.property.packages</param-name>
+      <param-value>edu.carleton.comp4601.resources</param-value>
+    </init-param>
+    
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>COMP4601 Searchable Document Archive V2.1</servlet-name>
+    <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping>
+  <error-page>
+	  <error-code>500</error-code>
+	  <location>/general_error.html</location>
+  </error-page> 
+
+  <context-param>
+    <description>This is the name of the search engine</description>
+    <param-name>sda.name</param-name>
+    <param-value>Super SDA</param-value>
+  </context-param>	  
+  <context-param>
+    <description>This is the description stored for the search engine in the registry</description>
+    <param-name>sda.description</param-name>
+    <param-value>Prof. White's SDA Engine</param-value>
+  </context-param><context-param>
+  	<param-name>sda.url</param-name>
+  	<param-value>http://10.0.1.5:8080/COMP4601-SDA/rest/sda/</param-value>
+  </context-param>
+  <context-param>
+      <description>This is the delay time in mSecs to wait before registering the search engine</description>
+      <param-name>sda.delay</param-name>
+      <param-value>10000</param-value>
+  </context-param>
+  <context-param>
+      <description>This is the frequency in mSecs used to query the directory for other search engines</description>
+      <param-name>sda.frequency</param-name>
+      <param-value>3000000</param-value>
+  </context-param>
+  <listener>
+    <listener-class>edu.carleton.comp4601.utility.SDAContextClass</listener-class>
+</listener>
+  
+</web-app>

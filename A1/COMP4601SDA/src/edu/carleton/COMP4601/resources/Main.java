@@ -2,6 +2,7 @@ package edu.carleton.comp4601.resources;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -16,8 +17,13 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import edu.carleton.comp4601.crawler.Crawler;
 import edu.carleton.comp4601.dao.Document;
 import edu.carleton.comp4601.dao.DocumentCollection;
+import edu.carleton.comp4601.dao.DocumentHelper;
+import edu.carleton.comp4601.utility.SDAConstants;
+import edu.carleton.comp4601.utility.SearchResult;
+import edu.carleton.comp4601.utility.SearchServiceManager;
 
 
 @Path("/sda")
@@ -33,7 +39,12 @@ public class Main {
 	private static final String name = "COMP4601 Searchable Document Archive";
 
 	public Main() {
-		
+		try {
+			Crawler.crawl(new String[0]);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@GET
@@ -93,6 +104,11 @@ public class Main {
 		
 		Document d = new Document(id);
 		
+		d.setName(name);
+		d.setText(text);
+		d.setLinks(links);
+		d.setTags(tags);
+		
 		// Returns false for already existing Document
 		if (!DocumentCollection.getInstance().add(d)) {
 			// 204 from spec
@@ -107,9 +123,27 @@ public class Main {
 		return new DocumentAction(uriInfo, request, id);
 	}
 
-	@Path("search/{tags}")
-	public SearchAction getSearch(@PathParam("tags") String tags) {
+	@Path("query/{tags}")
+	public SearchAction getQuery(@PathParam("tags") String tags) {
 		return new SearchAction(uriInfo, request, tags);
+	}
+	
+	@Path("search/{tags}")
+	@GET
+	public String searchForDocs(@PathParam("tags") String tags) {
+		SearchResult sr = SearchServiceManager.getInstance().query(tags);
+		
+		List<Document> results = DocumentCollection.getInstance().findAll(new SearchAction.TagSearchPredicate(tags.split(":")));
+		
+		try {
+			sr.await(SDAConstants.TIMEOUT, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			
+		}
+		
+		results.addAll(sr.getDocs());
+		
+		return DocumentCollection.getInstance().displayDocList(results);
 	}
 	
     @Path("delete/{tags}")
