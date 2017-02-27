@@ -33,6 +33,7 @@ public class DocumentCollection {
 	
 	public void loadAll() {
 		for (org.bson.Document d : Database.getDB().getCollection(DOC_COLLECTION_NAME).find()) {
+			d.put("id", d.get("_id"));
 			documents.add(new Document(d));
 		}
 	}

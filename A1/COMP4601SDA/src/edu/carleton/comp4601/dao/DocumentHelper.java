@@ -43,7 +43,7 @@ public class DocumentHelper {
 
 	public static String getDocFormat(Document doc) {
 		// ID - Name (tag, tag, tag)
-		String format = "<a href=\"" + PREFIX + doc.getId() + "\">" + doc.getId() + " - " + doc.getName() + " (";
+		String format = "<a href=\"" + doc.getUrl() + "\">" + doc.getId() + " - " + doc.getName() + " (";
 		
 		for(String tag : doc.getTags()) {
 			format += tag + ", ";
@@ -58,13 +58,15 @@ public class DocumentHelper {
 	
 	public static org.bson.Document save(Document d) {
 		org.bson.Document doc = new org.bson.Document();
-		
+
 		doc.put("_id", d.getId());
 		doc.put("name", d.getName());
 		doc.put("tags", d.getTags());
 		doc.put("text", d.getText());
 		doc.put("links", d.getLinks());
+		doc.put("url", d.getUrl());
 		doc.put("score", d.getScore());
+		doc.put("tags", d.getTags());
 		
 		return doc;
 	}
